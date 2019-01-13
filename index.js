@@ -14,6 +14,34 @@ const books = [
   },
 ];
 
+const users = [
+  {
+    id: 1,
+    username: 'alenthomas',
+    password: 'some_password_1'
+  },
+  {
+    id: 2,
+    username: 'rashid',
+    password: 'some_password_2'
+  }
+]
+
+const user_details = [
+  {
+    id: 1,
+    user: users[0],
+    place: 'kkd',
+    doc_id: 'some_doc_id_1',
+  },
+  {
+    id: 2,
+    user: users[1],
+    place: 'bng',
+    doc_id: 'some_doc_id_2'
+  }
+]
+
 // Type definitions define the "shape" of your data and specify
 // which ways the data can be fetched from the GraphQL server.
 const typeDefs = gql`
@@ -25,10 +53,26 @@ const typeDefs = gql`
     author: String
   }
 
+  type User {
+    id: Int
+    username: String
+    password: String
+    user_details: UserDetails
+  }
+
+  type UserDetails {
+    id: Int
+    user: User
+    place: String
+    doc_id: String
+  }
+
   # The "Query" type is the root of all GraphQL queries.
   # (A "Mutation" type will be covered later on.)
   type Query {
     books: [Book]
+    users: [User]
+    user_details: [UserDetails]
   }
 `;
 
@@ -37,6 +81,8 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     books: () => books,
+    users: () => users,
+    user_details: () => user_details
   },
 };
 
