@@ -1,46 +1,23 @@
+/* global require */
 const { ApolloServer, gql } = require('apollo-server');
+const {
+    createUser,
+    updateUser,
+    createUserDetail,
+    updateUserDetail,
+    deleteUserDetail
+} = require('./mutations.js');
+
+const {initUsers, initUserDetails} = require('./initialize.js');
 
 // This is a (sample) collection of books we'll be able to query
 // the GraphQL server for.  A more complete example might fetch
 // from an existing data source like a REST API or database.
-const books = [
-  {
-    title: 'Harry Potter and the Chamber of Secrets',
-    author: 'J.K. Rowling',
-  },
-  {
-    title: 'Jurassic Park',
-    author: 'Michael Crichton',
-  },
-];
 
-const users = [
-  {
-    id: 1,
-    username: 'alenthomas',
-    password: 'some_password_1'
-  },
-  {
-    id: 2,
-    username: 'rashid',
-    password: 'some_password_2'
-  }
-]
-
-const user_details = [
-  {
-    id: 1,
-    user: users[0],
-    place: 'kkd',
-    doc_id: 'some_doc_id_1',
-  },
-  {
-    id: 2,
-    user: users[1],
-    place: 'bng',
-    doc_id: 'some_doc_id_2'
-  }
-]
+// updateUser(3, {username: 'al3n', password: 'some_random_password'});
+// createUserDetails(3, 'kkd', 'doc_id_1');
+// updateUserDetails(3, {place: 'banglore', doc_id: 'random-shit'});
+// getUsers()
 
 // Type definitions define the "shape" of your data and specify
 // which ways the data can be fetched from the GraphQL server.
@@ -48,10 +25,6 @@ const typeDefs = gql`
   # Comments in GraphQL are defined with the hash (#) symbol.
 
   # This "Book" type can be used in other type declarations.
-  type Book {
-    title: String
-    author: String
-  }
 
   type User {
     id: Int
@@ -62,7 +35,7 @@ const typeDefs = gql`
 
   type UserDetails {
     id: Int
-    user: User
+    user_id: Int
     place: String
     doc_id: String
   }
@@ -70,7 +43,6 @@ const typeDefs = gql`
   # The "Query" type is the root of all GraphQL queries.
   # (A "Mutation" type will be covered later on.)
   type Query {
-    books: [Book]
     users: [User]
     user_details: [UserDetails]
   }
@@ -80,9 +52,9 @@ const typeDefs = gql`
 // schema.  We'll retrieve books from the "books" array above.
 const resolvers = {
   Query: {
-    books: () => books,
-    users: () => users,
-    user_details: () => user_details
+//    books: () => books,
+    users: () => initUsers().then(users => users),
+    user_details: () => initUserDetails().then(user_details => user_details)
   },
 };
 
