@@ -48,6 +48,7 @@ const typeDefs = gql`
   }
   type Mutation {
     createUser(username: String, password: String): User
+    updateUser(username: String, password: String): User
   }
 `;
 
@@ -60,7 +61,8 @@ const resolvers = {
 	    .then(user_details => user_details)
     },
     Mutation: {
-	createUser: (gql, {username, password}) => createUser(username, password).then(user => user)
+	createUser: (gql, {username, password}) => createUser(username, password).then(user => user),
+	updateUser: (gql, {username, password}) => updateUser(username, password).then(user => user)
   },
 };
 

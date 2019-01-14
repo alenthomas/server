@@ -8,7 +8,8 @@ const getUsers = () => {
 };
     
 const getUser = (username) => {
-    return Users.fetch({username})
+    return Users.query({where: {username}})
+	.fetch()
 	.then(user => user)
 	.catch(err => console.error('Error fetching user: ', err));
 };

@@ -1,6 +1,7 @@
 /* global require exports */
 
 const { Users, UserDetails } = require('./models.js');
+const { getUser } = require('./queries.js');
 
 const createUser = (username, password) => {
     return new Users({username, password})
@@ -9,10 +10,14 @@ const createUser = (username, password) => {
 	.catch(err => console.error('Error creating User: ', err));
 };
 
-const updateUser = (user_id, {username, password}) => {
-    return Users.forge({id: user_id, username, password})
-	.save()
+const updateUser = (username, password) => {
+    return getUser(username)
 	.then(user => user.id)
+	.then(id => {
+	    return Users.forge({id, username, password}).
+		save()
+		.then(user => user.toJSON());
+	})
 	.catch(err => console.error('Error updating User: ', err));
 };
 
