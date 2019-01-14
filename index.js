@@ -46,17 +46,31 @@ const typeDefs = gql`
     users: [User]
     user_details: [UserDetails]
   }
+  type Mutation {
+    createUser(username: String, password: String): User
+  }
 `;
 
 // Resolvers define the technique for fetching the types in the
 // schema.  We'll retrieve books from the "books" array above.
 const resolvers = {
-  Query: {
-//    books: () => books,
-    users: () => initUsers().then(users => users),
-    user_details: () => initUserDetails().then(user_details => user_details)
+    Query: {
+	users: () => initUsers().then(users => users),
+	user_details: () => initUserDetails()
+	    .then(user_details => user_details)
+    },
+    Mutation: {
+	createUser: (gql, {username, password}) => createUser(username, password).then(user => user)
   },
 };
+
+/* mutation template 
+mutation {
+  createUser(username: "rashid" password: "lksjdlkjs") {
+    username password id
+  }
+}
+*/
 
 // In the most basic sense, the ApolloServer can be started
 // by passing type definitions (typeDefs) and the resolvers

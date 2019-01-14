@@ -5,7 +5,7 @@ const { Users, UserDetails } = require('./models.js');
 const createUser = (username, password) => {
     return new Users({username, password})
 	.save()
-	.then(user => user.id)
+	.then(user => user.toJSON())
 	.catch(err => console.error('Error creating User: ', err));
 };
 
