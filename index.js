@@ -1,11 +1,11 @@
 /* global require */
 const { ApolloServer, gql } = require('apollo-server');
 const {
-    deleteUserDetail,
     login,
     register,
     editUser,
-    editUserDetails
+    editUserDetails,
+    removeUserDetails,
 } = require('./mutations.js');
 
 const {initUsers, initUserDetails} = require('./initialize.js');
@@ -68,6 +68,13 @@ const typeDefs = gql`
     user_details: UserDetails
   }
 
+  type RemoveDetailsResponse {
+    success: Boolean
+    error: Boolean
+    info: String
+    user_details: UserDetails
+  }
+
   # The "Query" type is the root of all GraphQL queries.
   # (A "Mutation" type will be covered later on.)
   type Query {
@@ -75,11 +82,11 @@ const typeDefs = gql`
     user_details: [UserDetails]
   }
   type Mutation {
-    deleteUserDetail(username: String): UserDetails
     login(username: String, password: String): LoginResponse
     register(username: String, password: String): RegisterResponse
     editUser(username: String, password: String): EditResponse
     editUserDetails(username: String, place: String, doc_id: String): EditDetailsResponse
+    removeUserDetails(username: String): RemoveDetailsResponse
   }
 `;
 
@@ -92,11 +99,11 @@ const resolvers = {
 	    .then(user_details => user_details)
     },
     Mutation: {
-	deleteUserDetail: (gql, {username}) => deleteUserDetail(username).then(user_details => user_details),
 	login: (gql, {username, password}) => login(username, password).then(user => user),
 	register: (gql, {username, password}) => register(username, password).then(user => user),
 	editUser: (gql, {username, password}) => editUser(username, password).then(user => user),
-	editUserDetails: (gql, {username, place, doc_id}) => editUserDetails(username, place, doc_id).then(userDetails => userDetails)
+	editUserDetails: (gql, {username, place, doc_id}) => editUserDetails(username, place, doc_id).then(userDetails => userDetails),
+	removeUserDetails: (gql, {username}) => removeUserDetails(username).then(user_details => user_details)
   },
 };
 
