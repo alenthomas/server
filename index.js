@@ -1,15 +1,12 @@
 /* global require */
 const { ApolloServer, gql } = require('apollo-server');
 const {
-    createUser,
     updateUser,
     updateUserDetail,
-    deleteUserDetail
+    deleteUserDetail,
+    login,
+    register,
 } = require('./mutations.js');
-
-const {
-    login
-} = require('./queries.js');
 
 const {initUsers, initUserDetails} = require('./initialize.js');
 
@@ -45,6 +42,15 @@ const typeDefs = gql`
 
   type LoginResponse {
     success: Boolean
+    error: Boolean
+    info: String
+    user: User
+  }
+
+  type RegisterResponse {
+    success: Boolean
+    error: Boolean
+    info: String
     user: User
   }
 
@@ -55,12 +61,11 @@ const typeDefs = gql`
     user_details: [UserDetails]
   }
   type Mutation {
-    createUser(username: String, password: String): User
     updateUser(username: String, password: String): User
     updateUserDetail(username: String, place: String, doc_id: String): UserDetails
     deleteUserDetail(username: String): UserDetails
     login(username: String, password: String): LoginResponse
-
+    register(username: String, password: String): RegisterResponse
   }
 `;
 
@@ -73,12 +78,11 @@ const resolvers = {
 	    .then(user_details => user_details)
     },
     Mutation: {
-	createUser: (gql, {username, password}) => createUser(username, password).then(user => user),
 	updateUser: (gql, {username, password}) => updateUser(username, password).then(user => user),
 	updateUserDetail: (gql, {username, place, doc_id}) => updateUserDetail(username, place, doc_id).then(userDetails => userDetails),
 	deleteUserDetail: (gql, {username}) => deleteUserDetail(username).then(user_details => user_details),
-	login: (gql, {username, password}) => login(username, password).then(user => user)
-
+	login: (gql, {username, password}) => login(username, password).then(user => user),
+	register: (gql, {username, password}) => register(username, password).then(user => user)
   },
 };
 

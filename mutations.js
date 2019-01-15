@@ -3,15 +3,19 @@
 const { Users, UserDetails } = require('./models.js');
 const { getUser } = require('./queries.js');
 
+const USER_LOGIN_ERROR = 'Username or password invalid';
+const USER_REGISTER_ERROR = 'Username not available';
+
+const USER_LOGIN_SUCCESS = 'User logined successfully';
+const USER_REGISTER_SUCCESS = 'User created successfully';
+
 const createUser = (username, password) => {
     return new Users({username, password})
 	.save()
 	.then(user => {
-	    // create an entry in userDetails
 	    createUserDetail(user.id);
 	    return user.toJSON();
-	})
-	.catch(err => console.error('Error creating User: ', err));
+	});
 };
 
 const updateUser = (username, password) => {
@@ -63,7 +67,38 @@ const deleteUserDetail = (username) => {
 	.catch(err => console.error('Error deleting UserDetail: ', err));
 };
 
-exports.createUser = createUser;
+const login = (username, password) => {
+    return Users.query({where: {username, password}})
+	.fetch()
+	.then(user => user.toJSON())
+	.then(userJson => (
+	    {success: true, info: USER_LOGIN_SUCCESS, user: userJson}
+	))
+	.catch(err => {
+	    console.error('Error getting user: ', err);
+	    return (
+		{success: false, info: USER_LOGIN_ERROR, user: {}}
+	    );
+	});
+
+};
+
+const register = (username, password) => {
+    return createUser(username, password)
+	.then(userJson => (
+	    {success: true, info: USER_REGISTER_SUCCESS, user: userJson}
+	))
+	.catch(err => {
+	    console.error('Error creating User: ', err);
+	    return (
+		{success: false, info: USER_REGISTER_ERROR, user: {}}
+	    );
+	});
+};
+
+
 exports.updateUser = updateUser;
 exports.updateUserDetail = updateUserDetail;
 exports.deleteUserDetail = deleteUserDetail;
+exports.login = login;
+exports.register = register;
