@@ -6,10 +6,12 @@ const { getUser } = require('./queries.js');
 const USER_LOGIN_ERROR = 'Username or password invalid';
 const USER_REGISTER_ERROR = 'Username not available';
 const USER_EDIT_ERROR = 'User edit unsuccessful';
+const USER_DETAIL_EDIT_ERROR = 'User detials edit unsuccessful';
 
 const USER_LOGIN_SUCCESS = 'User logined successfully';
 const USER_REGISTER_SUCCESS = 'User created successfully';
 const USER_EDIT_SUCCESS = 'User updated successfully';
+const USER_DETAIL_EDIT_SUCCESS = 'User details updated successfully';
 
 const createUser = (username, password) => {
     return new Users({username, password})
@@ -52,8 +54,7 @@ const updateUserDetail = (username, place=null, doc_id=null) => {
 		.save(payload, {method: 'update', patch: true})
 		.then(user_details => user_details.refresh())
 		.then(user_details => user_details.toJSON());
-	})
-	.catch(err => console.error('Error updating UserDetail: ', err));
+	});
 };
 
 const deleteUserDetail = (username) => {
@@ -110,9 +111,27 @@ const editUser = (username, password) => {
 	});
 };
 
+const editUserDetails = (username, place, doc_id) => {
+    return updateUserDetail(username, place, doc_id)
+	.then(userDetailJson => ({
+		success: true,
+		info: USER_DETAIL_EDIT_SUCCESS,
+		user_details: userDetailJson
+	})
+	     )
+	.catch(err => {
+	    console.error('Error updating user detail: ', err);
+	    return ({
+		success: false,
+		info: USER_DETAIL_EDIT_ERROR,
+		user_details: {}
+	    });
+	});
+};
 
-exports.updateUserDetail = updateUserDetail;
+
 exports.deleteUserDetail = deleteUserDetail;
 exports.login = login;
 exports.register = register;
 exports.editUser = editUser;
+exports.editUserDetails = editUserDetails;
