@@ -22,16 +22,10 @@ const getUserDetails = () => {
 
 
 const getUserDetail = (user_id) => {
-    return UserDetails.fetch({user_id})
+    return UserDetails.query({where: {user_id}})
+        .fetch()
 	.then(user_detail => user_detail)
 	.catch(err => console.error('Error fetching user detail: ', err));
-};
-
-const getUserFromDetail = (id) => {
-    return UserDetails.fetch({id})
-	.then(user_detail => user_detail.user())
-	.then(user => user)
-	.catch(err => console.error('Error fetching user from detail: ', err));
 };
 
 const getDocument = (doc_id) => {
@@ -43,4 +37,3 @@ exports.getUsers = getUsers;
 exports.getUser = getUser;
 exports.getUserDetails = getUserDetails;
 exports.getUserDetail = getUserDetail;
-exports.getUserFromDetail = getUserFromDetail;

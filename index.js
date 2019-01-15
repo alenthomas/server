@@ -3,7 +3,6 @@ const { ApolloServer, gql } = require('apollo-server');
 const {
     createUser,
     updateUser,
-    createUserDetail,
     updateUserDetail,
     deleteUserDetail
 } = require('./mutations.js');
@@ -49,6 +48,8 @@ const typeDefs = gql`
   type Mutation {
     createUser(username: String, password: String): User
     updateUser(username: String, password: String): User
+    updateUserDetail(username: String, place: String, doc_id: String): UserDetails
+    deleteUserDetail(username: String): UserDetails
   }
 `;
 
@@ -62,7 +63,10 @@ const resolvers = {
     },
     Mutation: {
 	createUser: (gql, {username, password}) => createUser(username, password).then(user => user),
-	updateUser: (gql, {username, password}) => updateUser(username, password).then(user => user)
+	updateUser: (gql, {username, password}) => updateUser(username, password).then(user => user),
+	updateUserDetail: (gql, {username, place, doc_id}) => updateUserDetail(username, place, doc_id).then(userDetails => userDetails),
+	deleteUserDetail: (gql, {username}) => deleteUserDetail(username).then(user_details => user_details)
+
   },
 };
 
