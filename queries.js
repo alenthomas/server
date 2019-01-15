@@ -32,8 +32,16 @@ const getDocument = (doc_id) => {
     // todo
 };
 
+const login = (username, password) => {
+    return Users.query({where: {username, password}})
+	.fetch()
+	.then(user => user.toJSON())
+	.then(userJson => ({success: true, user: userJson}))
+	.catch(err => ({success: false, user: {username: null, password: null, id: null}}));
+};
 
 exports.getUsers = getUsers;
 exports.getUser = getUser;
 exports.getUserDetails = getUserDetails;
 exports.getUserDetail = getUserDetail;
+exports.login = login;

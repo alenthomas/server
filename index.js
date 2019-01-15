@@ -7,6 +7,10 @@ const {
     deleteUserDetail
 } = require('./mutations.js');
 
+const {
+    login
+} = require('./queries.js');
+
 const {initUsers, initUserDetails} = require('./initialize.js');
 
 // This is a (sample) collection of books we'll be able to query
@@ -39,6 +43,11 @@ const typeDefs = gql`
     doc_id: String
   }
 
+  type LoginResponse {
+    success: Boolean
+    user: User
+  }
+
   # The "Query" type is the root of all GraphQL queries.
   # (A "Mutation" type will be covered later on.)
   type Query {
@@ -50,6 +59,8 @@ const typeDefs = gql`
     updateUser(username: String, password: String): User
     updateUserDetail(username: String, place: String, doc_id: String): UserDetails
     deleteUserDetail(username: String): UserDetails
+    login(username: String, password: String): LoginResponse
+
   }
 `;
 
@@ -65,7 +76,8 @@ const resolvers = {
 	createUser: (gql, {username, password}) => createUser(username, password).then(user => user),
 	updateUser: (gql, {username, password}) => updateUser(username, password).then(user => user),
 	updateUserDetail: (gql, {username, place, doc_id}) => updateUserDetail(username, place, doc_id).then(userDetails => userDetails),
-	deleteUserDetail: (gql, {username}) => deleteUserDetail(username).then(user_details => user_details)
+	deleteUserDetail: (gql, {username}) => deleteUserDetail(username).then(user_details => user_details),
+	login: (gql, {username, password}) => login(username, password).then(user => user)
 
   },
 };
