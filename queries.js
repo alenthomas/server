@@ -1,6 +1,9 @@
 /* global require exports */
 const { Users, UserDetails } = require('./models.js');
 
+const USER_DETAIL_READ_ERROR = 'User details read unsuccessful';
+const USER_DETAIL_READ_SUCCESS = 'User details fetched successfully';
+
 const getUsers = () => {
     return Users.fetchAll()
 	.then(users => users)
@@ -10,8 +13,7 @@ const getUsers = () => {
 const getUser = (username) => {
     return Users.query({where: {username}})
 	.fetch()
-	.then(user => user)
-	.catch(err => console.error('Error fetching user: ', err));
+	.then(user => user);
 };
 
 const getUserDetails = () => {
@@ -21,12 +23,34 @@ const getUserDetails = () => {
 };
 
 
-const getUserDetail = (user_id) => {
-    return UserDetails.query({where: {user_id}})
-        .fetch()
-	.then(user_detail => user_detail)
-	.catch(err => console.error('Error fetching user detail: ', err));
+const getUserDetail = (username) => {
+    return getUser(username)
+	.then(user => user.id)
+	.then(user_id => {
+	    return UserDetails.query({where: {user_id}})
+		.fetch()
+		.then(user_detail => user_detail.toJSON());
+	});
 };
+
+const readUserDetails = (username) => {
+    return getUserDetail(username)
+	.then(userDetailJson => ({
+	    success: true,
+	    info: USER_DETAIL_READ_SUCCESS,
+	    user_details: userDetailJson
+	})
+	     )
+	.catch(err => {
+	    console.error('Error getting user detail: ', err);
+	    return ({
+		success: false,
+		info: USER_DETAIL_READ_ERROR,
+		user_details: {}
+	    });
+	});
+};
+
 
 const getDocument = (doc_id) => {
     // todo
@@ -37,3 +61,4 @@ exports.getUsers = getUsers;
 exports.getUser = getUser;
 exports.getUserDetails = getUserDetails;
 exports.getUserDetail = getUserDetail;
+exports.readUserDetails = readUserDetails;

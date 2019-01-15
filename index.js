@@ -5,8 +5,12 @@ const {
     register,
     editUser,
     editUserDetails,
-    removeUserDetails,
+    removeUserDetails
 } = require('./mutations.js');
+
+const {
+    readUserDetails
+} = require('./queries.js');
 
 const {initUsers, initUserDetails} = require('./initialize.js');
 
@@ -42,35 +46,36 @@ const typeDefs = gql`
 
   type LoginResponse {
     success: Boolean
-    error: Boolean
     info: String
     user: User
   }
 
   type RegisterResponse {
     success: Boolean
-    error: Boolean
     info: String
     user: User
   }
 
   type EditResponse {
     success: Boolean
-    error: Boolean
     info: String
     user: User
   }
 
   type EditDetailsResponse {
     success: Boolean
-    error: Boolean
     info: String
     user_details: UserDetails
   }
 
   type RemoveDetailsResponse {
     success: Boolean
-    error: Boolean
+    info: String
+    user_details: UserDetails
+  }
+  
+  type UserDetailsResponse {
+    success: Boolean
     info: String
     user_details: UserDetails
   }
@@ -80,6 +85,7 @@ const typeDefs = gql`
   type Query {
     users: [User]
     user_details: [UserDetails]
+    readUserDetails(username: String): UserDetailsResponse
   }
   type Mutation {
     login(username: String, password: String): LoginResponse
@@ -96,14 +102,16 @@ const resolvers = {
     Query: {
 	users: () => initUsers().then(users => users),
 	user_details: () => initUserDetails()
-	    .then(user_details => user_details)
+	    .then(user_details => user_details),
+	readUserDetails: (gql, {username}) => readUserDetails(username).then(user_details => user_details)
     },
     Mutation: {
 	login: (gql, {username, password}) => login(username, password).then(user => user),
 	register: (gql, {username, password}) => register(username, password).then(user => user),
 	editUser: (gql, {username, password}) => editUser(username, password).then(user => user),
 	editUserDetails: (gql, {username, place, doc_id}) => editUserDetails(username, place, doc_id).then(userDetails => userDetails),
-	removeUserDetails: (gql, {username}) => removeUserDetails(username).then(user_details => user_details)
+	removeUserDetails: (gql, {username}) => removeUserDetails(username).then(user_details => user_details),
+
   },
 };
 

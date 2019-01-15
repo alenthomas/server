@@ -1,7 +1,7 @@
 /* global require exports */
 
 const { Users, UserDetails } = require('./models.js');
-const { getUser } = require('./queries.js');
+const { getUser, getUserDetail } = require('./queries.js');
 
 const USER_LOGIN_ERROR = 'Username or password invalid';
 const USER_REGISTER_ERROR = 'Username not available';
@@ -149,9 +149,11 @@ const removeUserDetails = (username) => {
 };
 
 
+
 exports.deleteUserDetail = deleteUserDetail;
 exports.login = login;
 exports.register = register;
 exports.editUser = editUser;
 exports.editUserDetails = editUserDetails;
 exports.removeUserDetails = removeUserDetails;
+
