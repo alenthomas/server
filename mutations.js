@@ -5,9 +5,11 @@ const { getUser } = require('./queries.js');
 
 const USER_LOGIN_ERROR = 'Username or password invalid';
 const USER_REGISTER_ERROR = 'Username not available';
+const USER_EDIT_ERROR = 'User edit unsuccessful';
 
 const USER_LOGIN_SUCCESS = 'User logined successfully';
 const USER_REGISTER_SUCCESS = 'User created successfully';
+const USER_EDIT_SUCCESS = 'User updated successfully';
 
 const createUser = (username, password) => {
     return new Users({username, password})
@@ -22,8 +24,7 @@ const updateUser = (username, password) => {
     return Users.where({username})
 	.save({password}, {method: 'update', patch: true})
 	.then(user => user.refresh())
-	.then(user => user.toJSON())
-	.catch(err => console.error('Error updating User: ', err));
+	.then(user => user.toJSON());
 };
 
 const createUserDetail = (user_id) => {
@@ -96,9 +97,22 @@ const register = (username, password) => {
 	});
 };
 
+const editUser = (username, password) => {
+    return updateUser(username, password)
+	.then(userJson => (
+	    {success: true, info: USER_EDIT_SUCCESS, user: userJson}
+	))
+	.catch(err => {
+	    console.error('Error updating User: ', err);
+	    return (
+		{success: false, info: USER_EDIT_ERROR, user: {}}
+	    );
+	});
+};
 
-exports.updateUser = updateUser;
+
 exports.updateUserDetail = updateUserDetail;
 exports.deleteUserDetail = deleteUserDetail;
 exports.login = login;
 exports.register = register;
+exports.editUser = editUser;
