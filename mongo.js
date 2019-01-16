@@ -27,7 +27,8 @@ const createInitialDoc = (username) => {
 };
 
 const updateDoc = (username, type, file) => {
-    return Doc.findOneAndUpdate({username}, {type, file});
+    return Doc.findOneAndUpdate({username}, {type, file})
+	.then(doc => doc);
 };
 
 const getDoc = (username) => {
@@ -36,7 +37,8 @@ const getDoc = (username) => {
 };
 
 const delDoc = (username) => {
-    return Doc.updateOne({username}, {type: '', file: ''});
+    return Doc.updateOne({username}, {type: '', file: ''})
+	.then(doc => doc);
 };
 
 exports.createInitialDoc = createInitialDoc;

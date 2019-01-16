@@ -13,12 +13,16 @@ const USER_REGISTER_ERROR = 'Username not available';
 const USER_EDIT_ERROR = 'User edit unsuccessful';
 const USER_DETAIL_EDIT_ERROR = 'User detials edit unsuccessful';
 const USER_DETAIL_REMOVE_ERROR = 'User details delete unsuccessful';
+const DOC_UPLOAD_ERROR = 'Upload docs unsuccessful';
+const DOC_DELETE_ERROR = 'Delete docs unsuccessful';
 
 const USER_LOGIN_SUCCESS = 'User logined successfully';
 const USER_REGISTER_SUCCESS = 'User created successfully';
 const USER_EDIT_SUCCESS = 'User updated successfully';
 const USER_DETAIL_EDIT_SUCCESS = 'User details updated successfully';
 const USER_DETAIL_REMOVE_SUCCESS = 'User details deleted successfully';
+const DOC_UPLOAD_SUCCESS = 'Uploaded  docs successfully';
+const DOC_DELETE_SUCCESS = 'Deleted docs successfully';
 
 const createUser = (username, password) => {
     return new Users({username, password})
@@ -137,6 +141,13 @@ const editUserDetails = (username, place, doc_id) => {
 };
 
 const removeUserDetails = (username) => {
+
+    delDoc(username)
+	.then(e => e)
+	.catch(err =>
+	       console.error('Error deleting doc: ', err)
+	      );
+    
     return deleteUserDetail(username)
 	.then(userDetailJson => ({
 	    success: true,
@@ -155,7 +166,37 @@ const removeUserDetails = (username) => {
 };
 
 const uploadDoc = (username, type, file) => {
-    return;
+    return updateDoc(username, type, file)
+	.then(docJson => ({
+	    success: true,
+	    info: DOC_UPLOAD_SUCCESS,
+	    doc_details: docJson
+	})
+	     )
+	.catch(err => {
+	    console.error('Error uploading doc: ', err);
+	    return ({
+		success: false,
+		info: DOC_UPLOAD_ERROR,
+		doc_details: {}
+	    });
+	});
+};
+
+const removeDoc = (username) => {
+    return delDoc(username)
+	.then(docJson => ({
+	    success: true,
+	    info: DOC_DELETE_SUCCESS
+	})
+	     )
+	.catch(err => {
+	    console.error('Error deleting doc: ', err);
+	    return ({
+		success: false,
+		info: DOC_DELETE_ERROR
+	    });
+	});
 };
 
 
@@ -166,4 +207,5 @@ exports.register = register;
 exports.editUser = editUser;
 exports.editUserDetails = editUserDetails;
 exports.removeUserDetails = removeUserDetails;
-
+exports.uploadDoc = uploadDoc;
+exports.removeDoc = removeDoc;

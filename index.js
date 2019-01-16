@@ -5,7 +5,9 @@ const {
     register,
     editUser,
     editUserDetails,
-    removeUserDetails
+    removeUserDetails,
+    uploadDoc,
+    removeDoc
 } = require('./mutations.js');
 
 const {
@@ -94,6 +96,11 @@ const typeDefs = gql`
     doc_details: Doc
   }
 
+  type DocDelete {
+    success: Boolean
+    info: String
+  }
+
   # The "Query" type is the root of all GraphQL queries.
   # (A "Mutation" type will be covered later on.)
   type Query {
@@ -109,6 +116,7 @@ const typeDefs = gql`
     editUserDetails(username: String, place: String, doc_id: String): EditDetailsResponse
     removeUserDetails(username: String): RemoveDetailsResponse
     uploadDoc(username: String, type: String, file: String): DocDetails
+    removeDoc(username: String): DocDelete
   }
 `;
 
@@ -128,7 +136,8 @@ const resolvers = {
 	editUser: (gql, {username, password}) => editUser(username, password).then(user => user),
 	editUserDetails: (gql, {username, place, doc_id}) => editUserDetails(username, place, doc_id).then(userDetails => userDetails),
 	removeUserDetails: (gql, {username}) => removeUserDetails(username).then(user_details => user_details),
-	uploadDoc: (gql, {username, type, file}) => uploadDoc(username, type, file).then(doc => doc)
+	uploadDoc: (gql, {username, type, file}) => uploadDoc(username, type, file).then(doc => doc),
+	removeDoc: (gql, {username}) => removeDoc(username).then(doc => doc)
 
   },
 };
