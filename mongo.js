@@ -1,6 +1,5 @@
 /* global require exports */
-const dbUrl = 'mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb';
-const dbName = 'docDb';
+const dbUrl = 'mongodb://127.0.0.1:27017/docDb';
 
 const mongoose = require('mongoose');
 
@@ -11,9 +10,10 @@ const  db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error: '));
 db.once('open', function () { console.log('connection successful'); });
 
-db.useDb(dbName);
+// db.useDb(dbName);
 
 const Schema = mongoose.Schema;
+
 const Document = new Schema({
     username: String,
     type: String,

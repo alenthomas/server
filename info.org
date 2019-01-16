@@ -1,0 +1,12 @@
+* Mongo
+  - db: 'docDb'
+  - collection: 'docs'
+    - fields: 'username', 'type', 'file'
+
+* Postgres
+  - db: 'myDb'
+  - table: 'users'
+    - fields: 'username', 'password'
+  - table: 'user_details'
+    - fields: 'user_id', 'place'
+
