@@ -1,8 +1,12 @@
 /* global require exports */
 const { Users, UserDetails } = require('./models.js');
+const { getDoc } = require('./mongo.js');
 
 const USER_DETAIL_READ_ERROR = 'User details read unsuccessful';
+const DOC_GET_ERROR = 'Document fetch unsuccessful';
+
 const USER_DETAIL_READ_SUCCESS = 'User details fetched successfully';
+const DOC_GET_SUCCESS = 'Document fetched successfully';
 
 const getUsers = () => {
     return Users.fetchAll()
@@ -52,8 +56,22 @@ const readUserDetails = (username) => {
 };
 
 
-const getDocument = (doc_id) => {
-    // todo
+const getDocument = (username) => {
+    return getDoc(username)
+	.then(docJson => ({
+	    success: true,
+	    info: DOC_GET_SUCCESS,
+	    doc_details: docJson
+	})
+	     )
+	.catch(err => {
+	    console.error('Error getting doc: ', err);
+	    return ({
+		success: false,
+		info: DOC_GET_ERROR,
+		doc_details: {}
+	    });
+	});
 };
 
 
@@ -62,3 +80,4 @@ exports.getUser = getUser;
 exports.getUserDetails = getUserDetails;
 exports.getUserDetail = getUserDetail;
 exports.readUserDetails = readUserDetails;
+exports.getDocument = getDocument;

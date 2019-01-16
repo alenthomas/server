@@ -2,6 +2,11 @@
 
 const { Users, UserDetails } = require('./models.js');
 const { getUser, getUserDetail } = require('./queries.js');
+const {
+    createInitialDoc,
+    updateDoc,
+    delDoc
+} = require('./mongo.js');
 
 const USER_LOGIN_ERROR = 'Username or password invalid';
 const USER_REGISTER_ERROR = 'Username not available';
@@ -20,6 +25,7 @@ const createUser = (username, password) => {
 	.save()
 	.then(user => {
 	    createUserDetail(user.id);
+	    createInitialDoc(username);
 	    return user.toJSON();
 	});
 };
@@ -146,6 +152,10 @@ const removeUserDetails = (username) => {
 		user_details: {}
 	    });
 	});
+};
+
+const uploadDoc = (username, type, file) => {
+    return;
 };
 
 

@@ -9,7 +9,8 @@ const {
 } = require('./mutations.js');
 
 const {
-    readUserDetails
+    readUserDetails,
+    getDocument
 } = require('./queries.js');
 
 const {initUsers, initUserDetails} = require('./initialize.js');
@@ -80,12 +81,26 @@ const typeDefs = gql`
     user_details: UserDetails
   }
 
+  type Doc {
+    username: String
+    type: String
+    file: String
+  }
+
+
+  type DocDetails {
+    success: Boolean
+    info: String
+    doc_details: Doc
+  }
+
   # The "Query" type is the root of all GraphQL queries.
   # (A "Mutation" type will be covered later on.)
   type Query {
     users: [User]
     user_details: [UserDetails]
     readUserDetails(username: String): UserDetailsResponse
+    getDoc(username: String): DocDetails
   }
   type Mutation {
     login(username: String, password: String): LoginResponse
@@ -93,6 +108,7 @@ const typeDefs = gql`
     editUser(username: String, password: String): EditResponse
     editUserDetails(username: String, place: String, doc_id: String): EditDetailsResponse
     removeUserDetails(username: String): RemoveDetailsResponse
+    uploadDoc(username: String, type: String, file: String): DocDetails
   }
 `;
 
@@ -103,7 +119,8 @@ const resolvers = {
 	users: () => initUsers().then(users => users),
 	user_details: () => initUserDetails()
 	    .then(user_details => user_details),
-	readUserDetails: (gql, {username}) => readUserDetails(username).then(user_details => user_details)
+	readUserDetails: (gql, {username}) => readUserDetails(username).then(user_details => user_details),
+	getDoc: (gql, {username}) => getDocument(username).then(doc => doc)
     },
     Mutation: {
 	login: (gql, {username, password}) => login(username, password).then(user => user),
@@ -111,6 +128,7 @@ const resolvers = {
 	editUser: (gql, {username, password}) => editUser(username, password).then(user => user),
 	editUserDetails: (gql, {username, place, doc_id}) => editUserDetails(username, place, doc_id).then(userDetails => userDetails),
 	removeUserDetails: (gql, {username}) => removeUserDetails(username).then(user_details => user_details),
+	uploadDoc: (gql, {username, type, file}) => uploadDoc(username, type, file).then(doc => doc)
 
   },
 };
