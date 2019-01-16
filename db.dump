@@ -110,7 +110,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.user_details (id, user_id, place, doc_id) FROM stdin;
-20	42	india	doc_id_1
+32	54	USA	null
 \.
 
 
@@ -119,7 +119,7 @@ COPY public.user_details (id, user_id, place, doc_id) FROM stdin;
 --
 
 COPY public.users (id, username, password, created_at) FROM stdin;
-42	user	123	\N
+54	user	123	\N
 \.
 
 
@@ -127,14 +127,14 @@ COPY public.users (id, username, password, created_at) FROM stdin;
 -- Name: user_details_id_seq; Type: SEQUENCE SET; Schema: public; Owner: alen
 --
 
-SELECT pg_catalog.setval('public.user_details_id_seq', 20, true);
+SELECT pg_catalog.setval('public.user_details_id_seq', 32, true);
 
 
 --
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: alen
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 42, true);
+SELECT pg_catalog.setval('public.users_id_seq', 54, true);
 
 
 --

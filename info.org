@@ -10,3 +10,5 @@
   - table: 'user_details'
     - fields: 'user_id', 'place'
 
+* Mongo Import dump
+  - mongoimport --db docDb --collection docs --file mongo.json
